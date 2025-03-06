@@ -22,6 +22,7 @@ Our application seeks to help solve the reluctance that students face when it co
 As students for several years ourselves, we hope to create a project that we ourselves would use in order to tackle the projects and homework that we have and maintain healthy habits along the way. It can be really difficult to work in a timely manner and be motivated enough to get tasks done as well as keep yourself on a healthy regimen, so students all over should have a platform that helps them overcome these issues to decrease their stress.
 
 **TEAM ROLES & ISSUES WORKING ON**
+
 Abigail
 
 Amanda
