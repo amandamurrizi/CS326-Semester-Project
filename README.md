@@ -28,9 +28,15 @@ Abigail
 Amanda
 
 Yana : Liason  
-- Coordinating questions with professor/TAs/UCAs and communicating information with all group members
+-  Coordinating questions with professor/TAs/UCAs and communicating information with all group members
 - Working on implementing a Sleep Tracker 
 - Working alongside Hassan to implement all other features for the health aspect of our application
 
-Hassan
+Hassan : Production Quality
+  - Leading the initiative and taking charge of implementing the Achievement Completion and Reward System.
+  - Ensures the final product meets all project requirements and specifications.
+  - Responsible for final debugging and troubleshooting.
+  - Works alongside Yana to implement all health-related features in the application.
+    
+
 
