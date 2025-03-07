@@ -27,7 +27,10 @@ Abigail
 
 Amanda
 
-Yana - Liason 
+Yana : Liason  
+- Coordinating questions with professor/TAs/UCAs and communicating information with all group members
+- Working on implementing a Sleep Tracker 
+- Working alongside Hassan to implement all other features for the health aspect of our application
 
 Hassan
 
