@@ -23,7 +23,11 @@ As students for several years ourselves, we hope to create a project that we our
 
 **TEAM ROLES & ISSUES WORKING ON**
 
-Abigail
+<ins>**Abigail : TimeKeeper**</ins>
+- Responsible for ensuring that all team members stay on track with their assigned tasks, setting checkpoint dates to monitor progress.
+- In charge of completing the weekly planner.
+- Collaborate with team members to debug and resolve any issues that arise.
+- Work alongside Amanda to develop the academic section of the project.
 
 <ins>**Amanda : Project Manager**</ins>
 - Defines the project scope and objectives
