@@ -45,6 +45,11 @@ _Issues to Work On:_
 - Working on implementing a Sleep Tracker 
 - Working alongside Hassan to implement all other features for the health aspect of our application
 
+_Issues to Work On:_
+1. UI design for Sleep Tracker
+2. Data design for Sleep Tracker
+3. Team role introduction
+
 <ins>**Hassan : Production Quality**</ins>
 - Leading the initiative and taking charge of implementing the Achievement Completion and Reward System.
 - Ensures the final product meets all project requirements and specifications.
