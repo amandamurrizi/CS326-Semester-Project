@@ -27,6 +27,8 @@ Abigail
 
 Amanda : Project Manager
 - Defines the project scope and objectives
+- Helps manage and fix issues as they arise, main point of contact for group members
+- Facilitates communication between team members
 
 
 Yana : Liason  
