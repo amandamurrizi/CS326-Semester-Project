@@ -25,22 +25,26 @@ As students for several years ourselves, we hope to create a project that we our
 
 Abigail
 
-Amanda : Project Manager
+<ins>**Amanda : Project Manager**</ins>
 - Defines the project scope and objectives
 - Helps manage and fix issues as they arise, main point of contact for group members
 - Facilitates communication between team members
 
+_Issues to Work On:_
+1. UI design for an academic To-Do list on the website
+2. Data structures necessary for the To-Do list
+3. Team role introduction
 
-Yana : Liason  
--  Coordinating questions with professor/TAs/UCAs and communicating information with all group members
+<ins>**Yana : Liason**</ins>
+- Coordinating questions with professor/TAs/UCAs and communicating information with all group members
 - Working on implementing a Sleep Tracker 
 - Working alongside Hassan to implement all other features for the health aspect of our application
 
-Hassan : Production Quality
-  - Leading the initiative and taking charge of implementing the Achievement Completion and Reward System.
-  - Ensures the final product meets all project requirements and specifications.
-  - Responsible for final debugging and troubleshooting.
-  - Works alongside Yana to implement all health-related features in the application.
+<ins>**Hassan : Production Quality**</ins>
+- Leading the initiative and taking charge of implementing the Achievement Completion and Reward System.
+- Ensures the final product meets all project requirements and specifications.
+- Responsible for final debugging and troubleshooting.
+- Works alongside Yana to implement all health-related features in the application.
     
 
 
