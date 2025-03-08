@@ -33,6 +33,7 @@ As students for several years ourselves, we hope to create a project that we our
 - Defines the project scope and objectives
 - Helps manage and fix issues as they arise, main point of contact for group members
 - Facilitates communication between team members
+- Work alongside Abigail to implement the academic half of the project.
 
 _Issues to Work On:_
 1. UI design for an academic To-Do list on the website
