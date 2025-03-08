@@ -25,7 +25,9 @@ As students for several years ourselves, we hope to create a project that we our
 
 Abigail
 
-Amanda
+Amanda : Project Manager
+- Defines the project scope and objectives
+
 
 Yana : Liason  
 -  Coordinating questions with professor/TAs/UCAs and communicating information with all group members
