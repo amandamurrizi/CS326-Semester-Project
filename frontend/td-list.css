@@ -1,0 +1,41 @@
+body {
+    text-align: center;
+}
+
+
+h1 {
+    text-align: center;
+    font-family: 'Lucida Handwriting';
+    font-size: xx-large;
+}
+
+h2 {
+    text-align: center;
+    font-family: 'Lucida Handwriting';
+    font-size: x-large;
+}
+
+#todo-board {
+    width: 600px;
+    height: 600px;
+    margin: auto;
+    display: grid;
+    grid: repeat(15, auto) / auto-flow;
+    margin-bottom: 3em;
+    border-style: solid;
+
+    background-color: #fff; 
+    background-image: 
+    linear-gradient(90deg, transparent 79px, #851919 79px, #abced4 81px, transparent 81px),
+    linear-gradient(#eee .1em, transparent .1em);
+    background-size: 100% 1.2em;
+}
+
+#addtask-button {
+    text-align: center;
+}
+
+#todo-input {
+    text-align: center;
+}
+
