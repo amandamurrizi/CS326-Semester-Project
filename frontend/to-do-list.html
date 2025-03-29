@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="td-list.css" />
+  </head>
+  <body>
+    <div id="todo-board">
+      <div id="header">
+        <h1>To Do List</h1>
+      </div>
+
+      <div id="todo-input">
+        <input
+          type="text"
+          class="input-item"
+          name="input_box"
+          id="input-box"
+          placeholder="Add Task"
+        />
+
+        <!-- addTask to be implemented in JS -->
+        <button id="addtask-button" onclick="addTask()">Add</button>
+      </div>
+
+      <h2>Tasks</h2>
+      <ul id="list-container"></ul>
+    </div>
+
+  </body>
+</html>
