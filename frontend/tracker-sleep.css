@@ -16,6 +16,7 @@ body {
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
+    transition: all 0.3s ease-in-out;
 }
 
 h1, h2 {
@@ -25,18 +26,19 @@ h1, h2 {
 
 /* Light theme for during day */
 .light-mode {
-    background: #f4f4f4;
+    background: #f8f9fa;
     color: #333;
 }
 
 .light-mode .container {
     background: white;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* Dark theme for during night*/
 .dark-mode {
-    background: #1a1a2e;
-    color: #e0e0e0;
+    background: #121212;
+    color: #f0f0f0;
 }
 
 .dark-mode .container {
@@ -45,30 +47,65 @@ h1, h2 {
 }
 
 /* Form elements */
-input, select, button {
+input, select{
     width: 100%;
     padding: 10px;
     margin-top: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
+    background: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0px 0px 8px rgba(76, 175, 80, 0.5);
 }
 
 button {
-    background: #4CAF50;
-    color: white;
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
     border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #4CAF50, #388E3C);
+    color: white;
     cursor: pointer;
+    transition: all 0.3s ease-in-out;
 }
 
 button:hover {
-    background: #45a049;
+    background: linear-gradient(135deg, #45a049, #2e7d32);
+    transform: scale(1.05);
 }
 
-/* ensures cross-browser functionality */
+.sleep-summary, .streak-tracker {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+.sleep-summary {
+    background: rgba(76, 175, 80, 0.1);
+    color: #2e7d32;
+    box-shadow: 0px 4px 10px rgba(76, 175, 80, 0.2);
+}
+
+.streak-tracker {
+    background: rgba(255, 193, 7, 0.1);
+    color: #FF9800;
+    box-shadow: 0px 4px 10px rgba(255, 152, 0, 0.2);
+}
+
 @media (max-width: 600px) {
     .container {
-        width: 100%;
-        padding: 15px;
+        width: 95%;
+        padding: 20px;
     }
 }
