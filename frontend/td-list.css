@@ -1,45 +1,136 @@
+/* General Styles */
 body {
+    font-family: 'Poppins', sans-serif;
     text-align: center;
+    background: #e48b8b;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
 }
 
-
-h1 {
-    text-align: center;
-    font-family: 'Lucida Handwriting';
-    font-size: xx-large;
-}
-
-h2 {
-    text-align: center;
-    font-family: 'Lucida Handwriting';
-    font-size: x-large;
-}
-
+/* To-Do Board Styling */
 #todo-board {
-    width: 600px;
-    height: 600px;
-    margin: auto;
-    display: grid;
-    grid: repeat(15, auto) / auto-flow;
-    margin-bottom: 3em;
-    border-style: solid;
-
-    background-color: #fff; 
-    background-image: 
-    linear-gradient(90deg, transparent 79px, #851919 79px, #abced4 81px, transparent 81px),
-    linear-gradient(#eee .1em, transparent .1em);
-    background-size: 100% 1.2em;
+    width: 90%;
+    max-width: 500px;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease-in-out;
 }
 
-#addtask-button {
-    text-align: center;
+/* Header */
+h1, h2 {
+    font-family: 'Lucida Handwriting', cursive;
+    margin-bottom: 10px;
+    color: #851919;
 }
 
+/* Input & Button */
 #todo-input {
-    text-align: center;
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 15px;
 }
 
-#task-counters {
-    font-family: 'Lucida Handwriting';
-    text-align: center;
+.input-item {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+}
+
+.input-item:focus {
+    outline: none;
+    border-color: #851919;
+    box-shadow: 0px 0px 8px rgba(133, 25, 25, 0.3);
+}
+
+/* Add Task Button */
+#addtask-button {
+    background: linear-gradient(135deg, #851919, #b02525);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+#addtask-button:hover {
+    background: linear-gradient(135deg, #b02525, #851919);
+    transform: scale(1.05);
+}
+
+/* Task List */
+#list-container {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#list-container li {
+    background: #fff;
+    padding: 12px;
+    border-radius: 10px;
+    margin: 8px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 5px solid #851919;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+#list-container li:hover {
+    transform: translateX(5px);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Completed Task Styling */
+.completed {
+    text-decoration: line-through;
+    color: #777;
+    border-left: 5px solid #4CAF50;
+}
+
+/* Task Counter */
+.counter-container {
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px;
+    background: rgba(133, 25, 25, 0.1);
+    border-radius: 10px;
+    display: inline-block;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Mobile Friendly */
+@media (max-width: 600px) {
+    #todo-board {
+        width: 95%;
+        padding: 15px;
+    }
+
+    #todo-input {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .input-item {
+        width: 100%;
+    }
 }
