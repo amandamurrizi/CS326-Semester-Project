@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievement Tracker</title>
+    <link rel="stylesheet" href="Achievement_Tracker.css">
+    <script>
+        let goals = [
+            { name: "Run 50 Miles", category: "Fitness", frequency: "4 weeks", status: "Completed" },
+            { name: "Read 5 Books", category: "Study", frequency: "6 weeks", status: "In Progress" }
+        ];
+
+        function addGoal() {
+            const goalName = document.getElementById('goal-name').value;
+            const goalCategory = document.getElementById('goal-category').value;
+            const goalFrequency = document.getElementById('goal-frequency').value;
+
+            if (goalName && goalCategory && goalFrequency) {
+                const newGoal = {
+                    name: goalName,
+                    category: goalCategory,
+                    frequency: goalFrequency,
+                    status: 'In Progress'
+                };
+
+                goals.push(newGoal);
+                displayGoals();
+
+                document.getElementById('goal-name').value = '';
+                document.getElementById('goal-category').value = 'fitness';
+                document.getElementById('goal-frequency').value = '';
+            }
+        }
+
+        function displayGoals() {
+            const goalList = document.getElementById('goal-list');
+            goalList.innerHTML = '';
+
+            goals.forEach(goal => {
+                const goalItem = document.createElement('li');
+                goalItem.className = 'goal-item ' + (goal.status === 'Completed' ? 'completed' : '');
+                goalItem.innerHTML = `
+                    <span class="goal-title">${goal.name}</span> 
+                    <span class="goal-status">${goal.status}</span>
+                `;
+                goalList.appendChild(goalItem);
+            });
+        }
+
+        window.onload = function() {
+            displayGoals();
+        };
+    </script>
+</head>
+<body>
+
+    <div id="tracker-board">
+        <!-- Header Section -->
+        <div id="header">
+            <h1>Achievement Tracker</h1>
+            <h2>Your Progress Made Easy</h2>
+        </div>
+
+        <!-- Profile and Dashboard Section -->
+        <div id="profile-section">
+            <div id="profile">
+                <img src="profile-image.png" alt="User Profile" id="profile-img">
+                <div id="level-progress">
+                    <p>Level: <span id="level">1</span></p>
+                    <p>XP: <span id="xp">+24</span></p>
+                    <p>Streak: <span id="streak">10 Days</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Goals Section -->
+        <div id="goals-section">
+            <h2>Current Goals</h2>
+            <ul id="goal-list">
+                <!-- Example Goals will be displayed here -->
+            </ul>
+
+            <!-- Add New Goal Section -->
+            <div id="add-goal">
+                <h3>Add New Goal</h3>
+                <input type="text" id="goal-name" placeholder="Goal Name">
+                <select id="goal-category">
+                    <option value="fitness">Fitness</option>
+                    <option value="study">Study</option>
+                    <option value="self-improvement">Self Improvement</option>
+                </select>
+                <input type="number" id="goal-frequency" placeholder="Frequency (e.g., Weekly)">
+                <button id="add-goal-button" onclick="addGoal()">Add Goal</button>
+            </div>
+        </div>
+
+        <!-- Progress and Leveling Section -->
+        <div id="progress-section">
+            <h2>Progress</h2>
+            <div class="level-bar">
+                <div class="level-progress" style="width: 50%;"></div>
+                <div class="level-label">Level 1</div>
+            </div>
+        </div>
+
+        <!-- Reminders Section -->
+        <div id="reminder-section">
+            <h2>Reminders</h2>
+            <div class="reminder-item">
+                <p>Reminder: Complete your daily workout!</p>
+                <span class="reminder-status">Pending</span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

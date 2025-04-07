@@ -1,0 +1,159 @@
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #f4f4f4;
+    transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.container {
+    width: 90%;
+    max-width: 800px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    background: white;
+    text-align: center;
+}
+
+/* Header */
+h1, h2 {
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 10px;
+}
+
+h2 {
+    font-size: 1.2em;
+}
+
+/* Dashboard Styles */
+#dashboard {
+    margin-bottom: 20px;
+}
+
+#profile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#profile img {
+    width: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+#level-progress {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+#goals {
+    margin-top: 30px;
+}
+
+#goal-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.goal-item {
+    background-color: #f1f1f1;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.goal-item.completed {
+    background-color: #d4edda;
+}
+
+.goal-item .goal-title {
+    font-weight: bold;
+}
+
+.goal-item .goal-status {
+    color: green;
+}
+
+/* Goal Creation Form */
+#goal-form input, #goal-form select, #goal-form button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Progress and Leveling Styles */
+#leveling {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-around;
+}
+
+#leveling .level-bar {
+    background: #ddd;
+    width: 60%;
+    height: 20px;
+    border-radius: 10px;
+    position: relative;
+}
+
+#leveling .level-progress {
+    background: #4CAF50;
+    height: 100%;
+    width: 50%; /* Example of 50% progress */
+    border-radius: 10px;
+}
+
+#leveling .level-label {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: bold;
+}
+
+/* Reminder and Notifications */
+#reminders {
+    margin-top: 30px;
+}
+
+#reminders p {
+    font-size: 1em;
+    color: #666;
+}
+
+#reminder-item {
+    display: flex;
+    justify-content: space-between;
+    background-color: #ffeb3b;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+#reminder-item .reminder-status {
+    font-weight: bold;
+}
