@@ -6,50 +6,111 @@
     <title>Achievement Tracker</title>
     <link rel="stylesheet" href="Achievement_Tracker.css">
     <script>
-        let goals = [
-            { name: "Run 50 Miles", category: "Fitness", frequency: "4 weeks", status: "Completed" },
-            { name: "Read 5 Books", category: "Study", frequency: "6 weeks", status: "In Progress" }
-        ];
+        // Open or create IndexedDB database
+        let db;
+        const request = indexedDB.open('GoalTrackerDB', 1);
 
+        request.onsuccess = function(event) {
+            db = event.target.result;
+            displayGoals();
+        };
+
+        request.onerror = function(event) {
+            console.log("Database error: " + event.target.errorCode);
+        };
+
+        request.onupgradeneeded = function(event) {
+            db = event.target.result;
+            const objectStore = db.createObjectStore('goals', { keyPath: 'id', autoIncrement: true });
+            objectStore.createIndex('name', 'name', { unique: false });
+            objectStore.createIndex('category', 'category', { unique: false });
+            objectStore.createIndex('frequency', 'frequency', { unique: false });
+            objectStore.createIndex('status', 'status', { unique: false });
+        };
+
+        // Add a new goal
         function addGoal() {
             const goalName = document.getElementById('goal-name').value;
             const goalCategory = document.getElementById('goal-category').value;
             const goalFrequency = document.getElementById('goal-frequency').value;
 
-            if (goalName && goalCategory && goalFrequency) {
-                const newGoal = {
-                    name: goalName,
-                    category: goalCategory,
-                    frequency: goalFrequency,
-                    status: 'In Progress'
-                };
-
-                goals.push(newGoal);
-                displayGoals();
-
-                document.getElementById('goal-name').value = '';
-                document.getElementById('goal-category').value = 'fitness';
-                document.getElementById('goal-frequency').value = '';
+            if (!goalName || !goalCategory || !goalFrequency) {
+                alert("Please fill in all fields!");
+                return; // Prevent submission if any field is missing
             }
+
+            const newGoal = {
+                name: goalName,
+                category: goalCategory,
+                frequency: goalFrequency,
+                status: 'In Progress'
+            };
+
+            const transaction = db.transaction(['goals'], 'readwrite');
+            const store = transaction.objectStore('goals');
+            store.add(newGoal);
+
+            transaction.oncomplete = function() {
+                displayGoals(); // Refresh the goal list
+            };
+
+            document.getElementById('goal-name').value = '';
+            document.getElementById('goal-category').value = 'fitness';
+            document.getElementById('goal-frequency').value = '';
         }
 
+        // Display all goals from IndexedDB
         function displayGoals() {
             const goalList = document.getElementById('goal-list');
             goalList.innerHTML = '';
 
-            goals.forEach(goal => {
-                const goalItem = document.createElement('li');
-                goalItem.className = 'goal-item ' + (goal.status === 'Completed' ? 'completed' : '');
-                goalItem.innerHTML = `
-                    <span class="goal-title">${goal.name}</span> 
-                    <span class="goal-status">${goal.status}</span>
-                `;
-                goalList.appendChild(goalItem);
-            });
+            const transaction = db.transaction(['goals'], 'readonly');
+            const store = transaction.objectStore('goals');
+            const request = store.getAll(); // Retrieve all stored goals
+
+            request.onsuccess = function() {
+                const goals = request.result;
+
+                goals.forEach(goal => {
+                    const goalItem = document.createElement('li');
+                    goalItem.className = 'goal-item ' + (goal.status === 'Completed' ? 'completed' : '');
+                    goalItem.innerHTML = `
+                        <span class="goal-title">${goal.name}</span> 
+                        <span class="goal-status">${goal.status}</span>
+                    `;
+                    goalList.appendChild(goalItem);
+                });
+            };
+        }
+
+        // Update XP and Goal Tracker (Dynamic XP Calculation)
+        function updateXP() {
+            const xp = document.getElementById('xp');
+            const streak = document.getElementById('streak');
+            let currentXP = parseInt(xp.innerHTML.slice(1)); // Get current XP value
+            currentXP += 10; // Increment by 10 (for example)
+            xp.innerHTML = "+" + currentXP;
+
+            let currentStreak = parseInt(streak.innerHTML);
+            currentStreak += 1; // Increment streak by 1
+            streak.innerHTML = currentStreak;
+        }
+
+        // Reminder Alerts for Users (Progress Tracker)
+        function setReminder() {
+            const reminders = document.getElementById('reminder-section');
+            const reminderItem = document.createElement('div');
+            reminderItem.className = 'reminder-item';
+            reminderItem.innerHTML = `<p>Reminder: Complete your daily workout!</p><span class="reminder-status">Pending</span>`;
+            reminders.appendChild(reminderItem);
         }
 
         window.onload = function() {
-            displayGoals();
+            if (db) {
+                displayGoals(); // Display goals if IndexedDB is ready
+            }
+
+            setReminder(); // Set a reminder when the page loads
         };
     </script>
 </head>
@@ -78,7 +139,7 @@
         <div id="goals-section">
             <h2>Current Goals</h2>
             <ul id="goal-list">
-                <!-- Example Goals will be displayed here -->
+                <!-- Goals will be displayed here -->
             </ul>
 
             <!-- Add New Goal Section -->
