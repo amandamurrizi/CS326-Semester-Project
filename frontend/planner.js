@@ -101,6 +101,29 @@ function fetchTasks(dateStr) {
     }
   };
 }
+function loadWeeklyTasks(weekStartDate) {
+  fetch(`/tasks?week=${weekStartDate}`)
+    .then(response => response.json())
+    .then(tasks => {
+      console.log('Tasks for the week:', tasks);
+      renderTasks(tasks);
+    })
+    .catch(error => {
+      console.error('Error loading tasks:', error);
+    });
+}
+
+function renderTasks(tasks) {
+  const container = document.getElementById('weekdays-container');
+  container.innerHTML = ''; 
+  tasks.forEach(task => {
+    const taskDiv = document.createElement('div');
+    taskDiv.className = 'day';
+    taskDiv.innerHTML = `<p>${task.title}</p><p>${task.date}</p>`;
+    container.appendChild(taskDiv);
+  });
+}
+
 //buttons
 document.getElementById("prev-week").addEventListener("click", () => {
   currentWeekStart.setDate(currentWeekStart.getDate() - 7);
