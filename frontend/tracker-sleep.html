@@ -63,7 +63,7 @@
         function loadSleepGoal() {
             const tx = db.transaction('settings','readonly');
             const store = tx.objectStore('settings');
-            const request = storage.get('sleepGoal');
+            const request = store.get('sleepGoal');
 
             request.onsuccess = () => {
                 if(request.result) {
@@ -109,8 +109,28 @@
             const totalSleep = calculateSleepTime(bed,wake);
             document.getElementById('total-sleep').textContent = totalSleep;
 
-            saveSleepLog(bed, wake, mood, totalSleep);
-
+            //saveSleepLog(bed, wake, mood, totalSleep);
+            fetch('http://localhost:3000/api/sleep', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                bedtime: bed,
+                wakeTime: wake,
+                mood: mood,
+                totalSleep: parseFloat(totalSleep)
+            })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Failed to log sleep");
+                    return response.json();
+            })
+            .then(data => {
+                console.log(data.message);
+            })
+            .catch(error => {
+                console.error('Error logging sleep:', error);
+            });
+ 
             const tx = db.transaction('streak', 'readwrite');
             const store = tx.objectStore('streak');
             const request = store.get('streakCount');
@@ -122,10 +142,9 @@
                 } else {
                     currentStreak = 0;
                 }
+                store.put({ key: 'streakCount', value: currentStreak });
+                document.getElementById('streak-count').textContent = currentStreak;
             }
-
-            store.put({ key: 'streakCount', value: currentStreak });
-            document.getElementById('streak-count').textContent = currentStreak;
         }
 
         function setupGoalControls() {
