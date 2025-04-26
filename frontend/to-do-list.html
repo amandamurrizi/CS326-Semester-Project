@@ -10,145 +10,107 @@
         <h1>To Do List</h1>
       </div>
 
-      <!-- counter to keep track of task completion -->
       <div class="counter-container">
         <div id="task-counters">
           Completed: <span id="completed-counter">0</span>
         </div>
       </div>
 
-      <!-- **Javascript implementation** -->
       <script>
-        if (!("indexedDB" in window)) {
-        alert("This browser doesn't support IndexedDB. Your tasks won't be saved.");
-        }
+  const container = document.getElementById("todo-board");
+  const completedCounter = document.getElementById("completed-counter");
 
-        const container = document.getElementById("todo-bord");
-        const completedCounter = document.getElementById("completed-counter");
-  
-        let db;
-  
-        // Initialize IndexedDB
-        const request = indexedDB.open("TodoListDB", 1);
-  
-        request.onerror = (event) => {
-          console.error("Database error:", event.target.errorCode);
-        };
-  
-        request.onsuccess = (event) => {
-          db = event.target.result;
-          loadTasks();
-        };
-  
-        request.onupgradeneeded = (event) => {
-          db = event.target.result;
-          const objectStore = db.createObjectStore("tasks", { keyPath: "id", autoIncrement: true });
-        };
-  
-        function updateCompletedCounter() {
-          const completedTasks = container.querySelectorAll(".task-checkbox:checked").length;
-          completedCounter.textContent = completedTasks;
-        }
-  
-        function saveTask(task) {
-          const tx = db.transaction("tasks", "readwrite");
-          const store = tx.objectStore("tasks");
-          store.put(task);
-        }
-  
-        function deleteTask(id) {
-          const tx = db.transaction("tasks", "readwrite");
-          const store = tx.objectStore("tasks");
-          store.delete(id);
-        }
-  
-        function loadTasks() {
-          const tx = db.transaction("tasks", "readonly");
-          const store = tx.objectStore("tasks");
-  
-          const request = store.openCursor();
-          request.onsuccess = (event) => {
-            const cursor = event.target.result;
-            if (cursor) {
-              createTask(cursor.value);
-              cursor.continue();
-            }
-          };
-        }
-  
-        function createTask(taskObj = { text: "", completed: false, id: null }) {
-          const row = document.createElement("div");
-          row.className = "task-row";
-  
-          const checkbox = document.createElement("input");
-          checkbox.type = "checkbox";
-          checkbox.className = "task-checkbox";
-          checkbox.checked = taskObj.completed;
-  
-          const input = document.createElement("input");
-          input.type = "text";
-          input.className = "task-input";
-          input.placeholder = "Type a task and press Enter";
-          input.value = taskObj.text;
-          if (taskObj.completed) {
-            input.classList.add("completed");
+  function updateCompletedCounter() {
+    const completedTasks = container.querySelectorAll(".task-checkbox:checked").length;
+    completedCounter.textContent = completedTasks;
+  }
+
+  async function fetchTasks() {
+    const res = await fetch('/api/tasks');
+    const tasks = await res.json();
+    tasks.forEach(task => createTask(task));
+    if (tasks.length === 0) createTask(); // add a blank row if empty
+  }
+
+  async function saveTask(task) {
+    const method = task.id ? 'PUT' : 'POST';
+    const url = task.id ? `/api/tasks/${task.id}` : '/api/tasks';
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(task)
+    });
+    return await res.json();
+  }
+
+  async function deleteTask(id) {
+    await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
+  }
+
+  function createTask(taskObj = { text: "", completed: false, id: null }) {
+    const row = document.createElement("div");
+    row.className = "task-row";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.className = "task-checkbox";
+    checkbox.checked = taskObj.completed;
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "task-input";
+    input.placeholder = "Type a task and press Enter";
+    input.value = taskObj.text;
+    if (taskObj.completed) input.classList.add("completed");
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "delete-btn";
+    deleteBtn.innerHTML = "✕";
+
+    const taskId = taskObj.id;
+
+    checkbox.addEventListener("change", async () => {
+      input.classList.toggle("completed", checkbox.checked);
+      await saveTask({ id: taskId, text: input.value, completed: checkbox.checked });
+      updateCompletedCounter();
+    });
+
+    deleteBtn.addEventListener("click", async () => {
+      container.removeChild(row);
+      if (taskId) await deleteTask(taskId);
+      updateCompletedCounter();
+    });
+
+    input.addEventListener("keydown", async (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (input.value.trim() !== "") {
+          const newTask = await saveTask({ id: taskId, text: input.value.trim(), completed: checkbox.checked });
+          if (!taskId) {
+            row.setAttribute("data-id", newTask.id);
           }
-  
-          const deleteBtn = document.createElement("button");
-          deleteBtn.className = "delete-btn";
-          deleteBtn.innerHTML = "✕";
-  
-          const taskId = taskObj.id ?? Date.now();
-  
-          checkbox.addEventListener("change", () => {
-            input.classList.toggle("completed", checkbox.checked);
-            saveTask({ id: taskId, text: input.value, completed: checkbox.checked });
-            updateCompletedCounter();
-          });
-  
-          deleteBtn.addEventListener("click", () => {
-            container.removeChild(row);
-            deleteTask(taskId);
-            updateCompletedCounter();
-          });
-  
-          input.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              if (input.value.trim() !== "") {
-                saveTask({ id: taskId, text: input.value.trim(), completed: checkbox.checked });
-                createTask(); // create a new empty task
-                setTimeout(() => {
-                  row.nextSibling?.querySelector(".task-input")?.focus();
-                }, 0);
-              }
-            }
-          });
-  
-          input.addEventListener("input", () => {
-            saveTask({ id: taskId, text: input.value.trim(), completed: checkbox.checked });
-          });
-  
-          row.appendChild(checkbox);
-          row.appendChild(input);
-          row.appendChild(deleteBtn);
-          container.appendChild(row);
-          updateCompletedCounter();
-        }
-  
-        // Add initial empty row if database is empty
-        window.addEventListener("load", () => {
+          createTask(); // add next row
           setTimeout(() => {
-            const tx = db.transaction("tasks", "readonly");
-            const store = tx.objectStore("tasks");
-            const countRequest = store.count();
-            countRequest.onsuccess = () => {
-              if (countRequest.result === 0) {
-                createTask(); // Start with one row
-              }
-            };
-          }, 100);
-        });
-      </script>
-    </body>
-  </html>
+            row.nextSibling?.querySelector(".task-input")?.focus();
+          }, 0);
+        }
+      }
+    });
+
+    input.addEventListener("input", () => {
+      if (taskId) {
+        saveTask({ id: taskId, text: input.value.trim(), completed: checkbox.checked });
+      }
+    });
+
+    row.appendChild(checkbox);
+    row.appendChild(input);
+    row.appendChild(deleteBtn);
+    container.appendChild(row);
+    updateCompletedCounter();
+  }
+
+  window.addEventListener("load", fetchTasks);
+    </script>
+  </body>
+</html>
