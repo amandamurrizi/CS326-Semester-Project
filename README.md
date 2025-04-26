@@ -55,6 +55,12 @@ _Issues to Work On:_
 - Ensures the final product meets all project requirements and specifications.
 - Responsible for final debugging and troubleshooting.
 - Works alongside Yana to implement all health-related features in the application.
+
+  _Issues to Work On:_
+  1.UI design for Achievement Implementer
+  2.Data design for Achievement Implementer 
+  3.Team role introduction
+    
     
 
 
