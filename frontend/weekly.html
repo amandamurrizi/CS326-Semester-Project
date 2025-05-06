@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weekly Planner</title>
+  <link rel="stylesheet" href="plannerdesign.css" />
+</head>
+<body>
+  <!-- Month Navigation Bar/ hardcode in the month for now -->
+  <div class="month-nav">
+    <button id="prev-week">&lt; Previous Week</button>
+   
+    <a href="month.html" id="week-range" class="month-link">Month</a>
+    <button id="next-week">Next Week &gt;</button>
+  </div>
+
+  <!-- Weekly View Layout -->
+  <div class="weekly-view">
+    <!-- Weekday Columns(now w js)-->
+    <div class="weekdays" id="weekdays-container">
+    </div>
+  </div>
+
+  <!-- To-Do List /amanda's part -->
+  <div class="todo-list">
+    <h3>To Do List</h3>
+  </div>
+
+  <script src="planner.js"></script>
+</body>
+</html>
