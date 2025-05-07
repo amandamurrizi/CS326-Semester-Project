@@ -1,4 +1,5 @@
-let db;
+let plannerdb;
+let currentWeekStart;
 const weekday_con = document.getElementById("weekdays-container");
 const todoTitle = document.getElementById("todo-title");
 const todoList = document.getElementById("todo-list");
@@ -103,6 +104,7 @@ function renderWeek() {
   updateTodoHeader(currentWeekStart);
   fetchTasks(formatDate(currentWeekStart));
   fetchServerTasks(currentWeekStart);
+//  fetchServerTasks();
 }
 
 function updateTodoHeader(dateObj) {
@@ -155,23 +157,40 @@ function fetchServerTasks(weekStartDate) {
   const formattedDate = weekStartDate.toISOString().split("T")[0];
 
   fetch(`/tasks?week=${formattedDate}`)
+  fetch('/tasks')
     .then(response => response.json())
     .then(tasks => {
-      const list = document.getElementById("server-task-list");
-      list.innerHTML = "";
-
+      const list = document.getElementById('server-task-list');
+      list.innerHTML = '';
       tasks.forEach(task => {
-        const li = document.createElement("li");
-        li.textContent = `${task.title} (${task.date})`;
+        const li = document.createElement('li');
+        li.textContent = `${task.title} — ${task.date}`;
         list.appendChild(li);
       });
     })
     .catch(error => {
-      console.error("Failed to fetch server tasks:", error);
+      console.error('Error fetching tasks from server:', error);
     });
+    // .then(response => response.json())
+    // .then(tasks => {
+    //   const list = document.getElementById("server-task-list");
+    //   list.innerHTML = "";
+
+    //   tasks.forEach(task => {
+    //     const li = document.createElement("li");
+    //     li.textContent = `${task.title} (${task.date})`;
+    //     list.appendChild(li);
+    //   });
+    // })
+    // .catch(error => {
+    //   console.error("Failed to fetch server tasks:", error);
+    // });
 }
 
-//buttons
+
+
+//buttons add todo task in here @amanda
+document.addEventListener("DOMContentLoaded", () => {
 document.getElementById("prev-week").addEventListener("click", () => {
   currentWeekStart.setDate(currentWeekStart.getDate() - 7);
   renderWeek();
@@ -182,6 +201,22 @@ document.getElementById("next-week").addEventListener("click", () => {
   renderWeek();
 });
 
-renderWeek(starteDate);
+fetch('/tasks', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ title, date })
+})
+  .then(res => res.json())
+  .then(() => {
+    fetchServerTasks(currentWeekStart); 
+    document.getElementById('new-task-title').value = '';
+    document.getElementById('new-task-date').value = '';
+  })
+  .catch(error => {
+    console.error('Error adding task:', error);
+  });
+});
+
+renderWeek();
 localStorage.removeItem("selectedMonth");
 localStorage.removeItem("selectedYear");
