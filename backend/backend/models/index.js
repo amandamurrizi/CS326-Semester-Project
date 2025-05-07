@@ -11,5 +11,6 @@ MoodLog.belongsTo(User, { foreignKey: 'userId' });
 module.exports = {
   User,
   SleepEntry,
-  MoodLog
+  MoodLog,
+  Achievement 
 };
