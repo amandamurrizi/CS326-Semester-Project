@@ -25,9 +25,9 @@ async function addAchievement(event) {
 
   const name = document.getElementById('goal-name').value;
   const description = document.getElementById('goal-description').value;
-  
+
   const newAchievement = {
-    id: Date.now().toString(),
+    id: Date.now().toString(), //  match Sequelize STRING type
     name,
     description,
     xp: 0,
@@ -64,3 +64,4 @@ async function deleteAchievement(id) {
 }
 
 window.onload = fetchAchievements;
+
