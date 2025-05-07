@@ -9,108 +9,136 @@
       <div id="header">
         <h1>To Do List</h1>
       </div>
-
       <div class="counter-container">
         <div id="task-counters">
           Completed: <span id="completed-counter">0</span>
         </div>
       </div>
+    </div>
+    <script>
+      const container = document.getElementById("todo-board");
+      const completedCounter = document.getElementById("completed-counter");
 
-      <script>
-  const container = document.getElementById("todo-board");
-  const completedCounter = document.getElementById("completed-counter");
+      function updateCompletedCounter() {
+        const completedTasks = container.querySelectorAll(
+          ".task-checkbox:checked"
+        ).length;
+        completedCounter.textContent = completedTasks;
+      }
 
-  function updateCompletedCounter() {
-    const completedTasks = container.querySelectorAll(".task-checkbox:checked").length;
-    completedCounter.textContent = completedTasks;
-  }
+      const API_BASE_URL = "http://localhost:3000/api/tasks";
 
-  async function fetchTasks() {
-    const res = await fetch('/api/tasks');
-    const tasks = await res.json();
-    tasks.forEach(task => createTask(task));
-    if (tasks.length === 0) createTask(); // add a blank row if empty
-  }
-
-  async function saveTask(task) {
-    const method = task.id ? 'PUT' : 'POST';
-    const url = task.id ? `/api/tasks/${task.id}` : '/api/tasks';
-    const res = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(task)
-    });
-    return await res.json();
-  }
-
-  async function deleteTask(id) {
-    await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
-  }
-
-  function createTask(taskObj = { text: "", completed: false, id: null }) {
-    const row = document.createElement("div");
-    row.className = "task-row";
-
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.className = "task-checkbox";
-    checkbox.checked = taskObj.completed;
-
-    const input = document.createElement("input");
-    input.type = "text";
-    input.className = "task-input";
-    input.placeholder = "Type a task and press Enter";
-    input.value = taskObj.text;
-    if (taskObj.completed) input.classList.add("completed");
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.className = "delete-btn";
-    deleteBtn.innerHTML = "✕";
-
-    const taskId = taskObj.id;
-
-    checkbox.addEventListener("change", async () => {
-      input.classList.toggle("completed", checkbox.checked);
-      await saveTask({ id: taskId, text: input.value, completed: checkbox.checked });
-      updateCompletedCounter();
-    });
-
-    deleteBtn.addEventListener("click", async () => {
-      container.removeChild(row);
-      if (taskId) await deleteTask(taskId);
-      updateCompletedCounter();
-    });
-
-    input.addEventListener("keydown", async (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        if (input.value.trim() !== "") {
-          const newTask = await saveTask({ id: taskId, text: input.value.trim(), completed: checkbox.checked });
-          if (!taskId) {
-            row.setAttribute("data-id", newTask.id);
-          }
-          createTask(); // add next row
-          setTimeout(() => {
-            row.nextSibling?.querySelector(".task-input")?.focus();
-          }, 0);
+      async function fetchTasks() {
+        try {
+          const res = await fetch(API_BASE_URL, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          });
+          if (!res.ok) throw new Error("Failed to fetch tasks");
+          const tasks = await res.json();
+          tasks.forEach((task) => createTask(task));
+          if (tasks.length === 0) createTask();
+        } catch (error) {
+          console.error("Error fetching tasks:", error);
+          createTask();
         }
       }
-    });
 
-    input.addEventListener("input", () => {
-      if (taskId) {
-        saveTask({ id: taskId, text: input.value.trim(), completed: checkbox.checked });
+      async function saveTask(task) {
+        const method = task.id ? "PUT" : "POST";
+        const url = task.id ? `${API_BASE_URL}/${task.id}` : API_BASE_URL;
+        const res = await fetch(url, {
+          method,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(task),
+        });
+        if (!res.ok) throw new Error("Failed to save task");
+        return await res.json();
       }
-    });
 
-    row.appendChild(checkbox);
-    row.appendChild(input);
-    row.appendChild(deleteBtn);
-    container.appendChild(row);
-    updateCompletedCounter();
-  }
+      async function deleteTask(id) {
+        const res = await fetch(`${API_BASE_URL}/${id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error("Failed to delete task");
+      }
 
-  window.addEventListener("load", fetchTasks);
+      function createTask(taskObj = { text: "", completed: false, id: null }) {
+        const row = document.createElement("div");
+        row.className = "task-row";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "task-checkbox";
+        checkbox.checked = taskObj.completed;
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "task-input";
+        input.placeholder = "Type a task and press Enter";
+        input.value = taskObj.text;
+        if (taskObj.completed) input.classList.add("completed");
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.type = "button"; // Prevents acting as submit
+        deleteBtn.className = "delete-btn";
+        deleteBtn.innerHTML = "✕";
+
+        const taskId = taskObj.id;
+
+        checkbox.addEventListener("change", async () => {
+          input.classList.toggle("completed", checkbox.checked);
+          await saveTask({
+            id: taskId,
+            text: input.value,
+            completed: checkbox.checked,
+          });
+          updateCompletedCounter();
+        });
+
+        deleteBtn.addEventListener("click", async () => {
+          container.removeChild(row);
+          if (taskId) await deleteTask(taskId);
+          updateCompletedCounter();
+        });
+
+        input.addEventListener("keydown", async (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            if (input.value.trim() !== "") {
+              const newTask = await saveTask({
+                id: taskId,
+                text: input.value.trim(),
+                completed: checkbox.checked,
+              });
+              if (!taskId) {
+                row.setAttribute("data-id", newTask.id);
+              }
+              createTask();
+              setTimeout(() => {
+                row.nextSibling?.querySelector(".task-input")?.focus();
+              }, 0);
+            }
+          }
+        });
+
+        input.addEventListener("input", () => {
+          if (taskId) {
+            saveTask({
+              id: taskId,
+              text: input.value.trim(),
+              completed: checkbox.checked,
+            });
+          }
+        });
+
+        row.appendChild(checkbox);
+        row.appendChild(input);
+        row.appendChild(deleteBtn);
+        container.appendChild(row);
+        updateCompletedCounter();
+      }
+
+      window.addEventListener("load", fetchTasks);
     </script>
   </body>
 </html>
