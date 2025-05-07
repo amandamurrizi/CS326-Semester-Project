@@ -10,6 +10,51 @@ body {
   padding: 20px;
 }
 
+.weekly-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.server-tasks {
+  flex: 1;
+  background-color: #7E8A75;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  min-width: 250px;
+}
+
+.server-tasks h3 {
+  margin-bottom: 15px;
+  font-size: 1.25rem;
+}
+
+#server-task-list {
+  list-style: disc inside;
+}
+
+#server-task-list li {
+  margin-bottom: 8px;
+}
+.bottom-panels {
+  display: flex;
+  gap: 20px;
+}
+
+.todo-list, .server-tasks {
+  flex: 1;
+  background-color: #7E8A75;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.todo-list h3, .server-tasks h3 {
+  font-size: 1.25rem;
+  margin-bottom: 15px;
+}
+
 .year-nav {
   display: flex;
   justify-content: space-between;
