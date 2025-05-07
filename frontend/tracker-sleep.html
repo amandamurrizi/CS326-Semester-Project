@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sleep Tracker</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="tracker-sleep.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <script>
         function applyTheme() {
@@ -17,7 +17,232 @@
                 document.body.classList.add('dark-mode');
             }
         }
-        window.onload = applyTheme;
+        function calculateSleepTime(bed, wake) {
+            const [bedHour,bedMin] = bed.split(':').map(Number);
+            const [wakeHour, wakeMin] = wake.split(':').map(Number);
+
+            let bedDate = new Date();
+            bedDate.setHours(bedHour, bedMin);
+
+            let wakeDate = new Date();
+            wakeDate.setHours(wakeHour, wakeMin);
+
+            if (wakeDate <= bedDate) {
+                wakeDate.setDate(wakeDate.getDate() + 1);
+            }
+
+            const diffDate = wakeDate - bedDate;
+            const diffHours = diffDate / (1000 * 60 * 60);
+            return diffHours.toFixed(2);
+        }
+
+        function saveSleepLog(bedtime, wakeTime, mood, totalSleep) {
+            const tx = db.transaction('sleepLogs', 'readwrite');
+            const store = tx.objectStore('sleepLogs');
+            const log = {
+                date: new Date().toISOString().split('T')[0],
+                bedtime,
+                wakeTime,
+                mood,
+                totalSleep: parseFloat(totalSleep)
+            };
+            store.add(log);
+            tx.oncomplete = () => console.log('Sleep log saved');
+            tx.onerror = () => console.error('Error saving log');
+        }
+
+        function savesSleepGoal(goal) {
+            const tx = db.transaction('settings','readwrite');
+            const store = tx.objectStore('settings');
+            store.put({key: 'sleepGoal',value: parseFloat(goal)});
+
+            tx.oncomplete = () => console.log('Sleep goal saved:', goal);
+            tx.onerror = () => console.error('Error saving goal');
+        }
+
+        function loadSleepGoal() {
+            const tx = db.transaction('settings','readonly');
+            const store = tx.objectStore('settings');
+            const request = store.get('sleepGoal');
+
+            request.onsuccess = () => {
+                if(request.result) {
+                    document.getElementById('sleep-goal').value = request.result.value;
+                } else {
+                    console.log("No sleep goal found");
+                }
+            };
+
+            request.onerror = () => {
+                console.error("Failed to load sleep goal");
+            };
+        }
+
+        function loadLatestSleepLog() {
+            const tx = db.transaction('sleepLogs','readonly');
+            const store = tx.objectStore('sleepLogs');
+            const request = store.getAll();
+
+            request.onsuccess = () => {
+                const logs = request.result;
+                if(logs.length>0) {
+                    const lastLog = logs[logs.length-1];
+                    document.getElementById('total-sleep').textContent = lastLog.totalSleep;
+                    document.getElementById('bedtime').value = lastLog.bedtime;
+                    document.getElementById('wake-time').value = lastLog.wakeTime;
+                    document.getElementById('sleep-quality').value = lastLog.mood;
+                }
+            };
+        }
+
+        function logSleep() {
+            const bed = document.getElementById('bedtime').value;
+            const wake = document.getElementById('wake-time').value;
+            const mood = document.getElementById('sleep-quality').value;
+            const goal = parseFloat(document.getElementById('sleep-goal').value);
+
+            if(!bed || !wake || !goal) {
+                alert("Please enter bedtime, wake-up time, and sleep goal");
+                return;
+            }
+
+            const totalSleep = calculateSleepTime(bed,wake);
+            document.getElementById('total-sleep').textContent = totalSleep;
+
+            //saveSleepLog(bed, wake, mood, totalSleep);
+            fetch('http://localhost:3000/api/sleep', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: 1,
+                    bedtime: bed,
+                    wakeTime: wake,
+                    mood: mood,
+                    totalSleep: parseFloat(totalSleep)
+                })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Failed to log sleep");
+                    return response.json();
+            })
+            .then(data => {
+                console.log(data.message);
+            })
+            .catch(error => {
+                console.error('Error logging sleep:', error);
+            });
+ 
+            const tx = db.transaction('streak', 'readwrite');
+            const store = tx.objectStore('streak');
+            const request = store.get('streakCount');
+
+            request.onsuccess = () => {
+                let currentStreak = request.result ? request.result.value : 0;
+                if (parseFloat(totalSleep) >= goal) {
+                    currentStreak++;
+                } else {
+                    currentStreak = 0;
+                }
+                store.put({ key: 'streakCount', value: currentStreak });
+                document.getElementById('streak-count').textContent = currentStreak;
+            }
+        }
+
+        function setupGoalControls() {
+            const input = document.getElementById('sleep-goal');
+            const editButton = document.getElementById('edit-goal');
+            const saveButton = document.getElementById('save-goal');
+
+            editButton.addEventListener('click', () => {
+                input.disabled = false;
+                editButton.style.display = 'none';
+                saveButton.style.display = 'inline';
+            });
+
+            saveButton.addEventListener('click', () => {
+                const goal = input.value;
+                if (!goal || goal < 1) {
+                    alert('Please enter a valid sleep goal.');
+                    return;
+                }
+                savesSleepGoal(goal);
+                displaySleepGoal();
+                input.disabled = true;
+                saveButton.style.display = 'none';
+                editButton.style.display = 'inline';
+            });
+        }
+
+        function displaySleepGoal() {
+            const tx = db.transaction('settings', 'readonly');
+            const store = tx.objectStore('settings');
+            const request = store.get('sleepGoal');
+
+            request.onsuccess = () => {
+                if (request.result) {
+                    const goal = request.result.value;
+                    document.getElementById('goal-display').textContent = goal;
+                } else {
+                    document.getElementById('goal-display').textContent = '--';
+                }
+            };
+        }
+
+        function saveStreak(count) {
+            const tx = db.transaction('streak', 'readwrite');
+            const store = tx.objectStore('streak');
+            store.put({ key: 'streakCount', value: count });
+        }
+
+        function loadStreak() {
+            const tx = db.transaction('streak', 'readonly');
+            const store = tx.objectStore('streak');
+            const request = store.get('streakCount');
+
+            request.onsuccess = () => {
+                const value = request.result ? request.result.value : 0;
+                document.getElementById('streak-count').textContent = value;
+            };
+        }
+
+
+        function initDB() {
+            const request = indexedDB.open('SleepTrackerDB',3);
+           
+            request.onerror = () => {
+                console.error('Failed to open IndexedDB');
+            };
+
+            request.onsuccess = (event) => {
+                db = event.target.result;
+                console.log('DB opened successfully');
+                loadLatestSleepLog();
+                loadSleepGoal();
+                displaySleepGoal();
+                loadStreak();
+            };
+
+            request.onupgradeneeded = (event) => {
+                db = event.target.result;
+                if(!db.objectStoreNames.contains('sleepLogs')) {
+                    const store = db.createObjectStore('sleepLogs', {keyPath: 'id', autoIncrement: true});
+                    store.createIndex('date','date',{unique:false});
+                }
+                if (!db.objectStoreNames.contains('settings')) {
+                    db.createObjectStore('settings', { keyPath: 'key' });
+                }
+                if (!db.objectStoreNames.contains('streak')) {
+                    db.createObjectStore('streak', { keyPath: 'key' });
+                }
+            };
+        }   
+
+        window.onload = function() {
+            applyTheme();
+            initDB();
+            document.getElementById('log-sleep').addEventListener('click',logSleep);
+            setupGoalControls(); 
+        };
     </script>
 </head>
 <body>
@@ -27,7 +252,9 @@
         <!-- Sleep Goal Input -->
         <div class="sleep-goal">
             <label for="sleep-goal">Nightly sleep goal (hours):</label>
-            <input type="number" id="sleep-goal" min="1" max="12" step="0.5">
+            <input type="number" id="sleep-goal" min="1" max="12" step="0.5" disabled>
+            <button id="edit-goal">Edit</button>
+            <button id="save-goal" style="display: none;">Save</button>
         </div>
         
         <!-- Sleep Input Form -->
@@ -45,7 +272,7 @@
                 <option value="tired">Tired</option>
             </select>
             
-            <button>Log Sleep</button>
+            <button id="log-sleep">Log Sleep</button>
         </div>
         
         <!-- Sleep Summary -->
@@ -58,6 +285,11 @@
         <div class="streak-tracker">
             <h2>Streak</h2>
             <p> Days: <span id="streak-count">0</span></p>
+
+        <div class="goal-summary">
+            <h2>Your Sleep Goal</h2>
+            <p>You are aiming for: <span id="goal-display">---</span> hours of sleep per night.</p>
+        </div>
         </div>
     </div>
 </body>

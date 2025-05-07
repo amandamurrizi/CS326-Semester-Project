@@ -1,179 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Achievement Tracker</title>
-    <link rel="stylesheet" href="Achievement_Tracker.css">
-    <script>
-        // Open or create IndexedDB database
-        let db;
-        const request = indexedDB.open('GoalTrackerDB', 1);
-
-        request.onsuccess = function(event) {
-            db = event.target.result;
-            displayGoals();
-        };
-
-        request.onerror = function(event) {
-            console.log("Database error: " + event.target.errorCode);
-        };
-
-        request.onupgradeneeded = function(event) {
-            db = event.target.result;
-            const objectStore = db.createObjectStore('goals', { keyPath: 'id', autoIncrement: true });
-            objectStore.createIndex('name', 'name', { unique: false });
-            objectStore.createIndex('category', 'category', { unique: false });
-            objectStore.createIndex('frequency', 'frequency', { unique: false });
-            objectStore.createIndex('status', 'status', { unique: false });
-        };
-
-        // Add a new goal
-        function addGoal() {
-            const goalName = document.getElementById('goal-name').value;
-            const goalCategory = document.getElementById('goal-category').value;
-            const goalFrequency = document.getElementById('goal-frequency').value;
-
-            if (!goalName || !goalCategory || !goalFrequency) {
-                alert("Please fill in all fields!");
-                return; // Prevent submission if any field is missing
-            }
-
-            const newGoal = {
-                name: goalName,
-                category: goalCategory,
-                frequency: goalFrequency,
-                status: 'In Progress'
-            };
-
-            const transaction = db.transaction(['goals'], 'readwrite');
-            const store = transaction.objectStore('goals');
-            store.add(newGoal);
-
-            transaction.oncomplete = function() {
-                displayGoals(); // Refresh the goal list
-            };
-
-            document.getElementById('goal-name').value = '';
-            document.getElementById('goal-category').value = 'fitness';
-            document.getElementById('goal-frequency').value = '';
-        }
-
-        // Display all goals from IndexedDB
-        function displayGoals() {
-            const goalList = document.getElementById('goal-list');
-            goalList.innerHTML = '';
-
-            const transaction = db.transaction(['goals'], 'readonly');
-            const store = transaction.objectStore('goals');
-            const request = store.getAll(); // Retrieve all stored goals
-
-            request.onsuccess = function() {
-                const goals = request.result;
-
-                goals.forEach(goal => {
-                    const goalItem = document.createElement('li');
-                    goalItem.className = 'goal-item ' + (goal.status === 'Completed' ? 'completed' : '');
-                    goalItem.innerHTML = `
-                        <span class="goal-title">${goal.name}</span> 
-                        <span class="goal-status">${goal.status}</span>
-                    `;
-                    goalList.appendChild(goalItem);
-                });
-            };
-        }
-
-        // Update XP and Goal Tracker (Dynamic XP Calculation)
-        function updateXP() {
-            const xp = document.getElementById('xp');
-            const streak = document.getElementById('streak');
-            let currentXP = parseInt(xp.innerHTML.slice(1)); // Get current XP value
-            currentXP += 10; // Increment by 10 (for example)
-            xp.innerHTML = "+" + currentXP;
-
-            let currentStreak = parseInt(streak.innerHTML);
-            currentStreak += 1; // Increment streak by 1
-            streak.innerHTML = currentStreak;
-        }
-
-        // Reminder Alerts for Users (Progress Tracker)
-        function setReminder() {
-            const reminders = document.getElementById('reminder-section');
-            const reminderItem = document.createElement('div');
-            reminderItem.className = 'reminder-item';
-            reminderItem.innerHTML = `<p>Reminder: Complete your daily workout!</p><span class="reminder-status">Pending</span>`;
-            reminders.appendChild(reminderItem);
-        }
-
-        window.onload = function() {
-            if (db) {
-                displayGoals(); // Display goals if IndexedDB is ready
-            }
-
-            setReminder(); // Set a reminder when the page loads
-        };
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Achievement Tracker</title>
+  <link rel="stylesheet" href="Achievement_Tracker.css">
 </head>
 <body>
 
-    <div id="tracker-board">
-        <!-- Header Section -->
-        <div id="header">
-            <h1>Achievement Tracker</h1>
-            <h2>Your Progress Made Easy</h2>
-        </div>
+  <div id="tracker-board">
 
-        <!-- Profile and Dashboard Section -->
-        <div id="profile-section">
-            <div id="profile">
-                <img src="profile-image.png" alt="User Profile" id="profile-img">
-                <div id="level-progress">
-                    <p>Level: <span id="level">1</span></p>
-                    <p>XP: <span id="xp">+24</span></p>
-                    <p>Streak: <span id="streak">10 Days</span></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Goals Section -->
-        <div id="goals-section">
-            <h2>Current Goals</h2>
-            <ul id="goal-list">
-                <!-- Goals will be displayed here -->
-            </ul>
-
-            <!-- Add New Goal Section -->
-            <div id="add-goal">
-                <h3>Add New Goal</h3>
-                <input type="text" id="goal-name" placeholder="Goal Name">
-                <select id="goal-category">
-                    <option value="fitness">Fitness</option>
-                    <option value="study">Study</option>
-                    <option value="self-improvement">Self Improvement</option>
-                </select>
-                <input type="number" id="goal-frequency" placeholder="Frequency (e.g., Weekly)">
-                <button id="add-goal-button" onclick="addGoal()">Add Goal</button>
-            </div>
-        </div>
-
-        <!-- Progress and Leveling Section -->
-        <div id="progress-section">
-            <h2>Progress</h2>
-            <div class="level-bar">
-                <div class="level-progress" style="width: 50%;"></div>
-                <div class="level-label">Level 1</div>
-            </div>
-        </div>
-
-        <!-- Reminders Section -->
-        <div id="reminder-section">
-            <h2>Reminders</h2>
-            <div class="reminder-item">
-                <p>Reminder: Complete your daily workout!</p>
-                <span class="reminder-status">Pending</span>
-            </div>
-        </div>
+    <!-- Header Section -->
+    <div id="header">
+      <h1>Achievement Tracker</h1>
+      <h2>Your Progress Made Easy</h2>
     </div>
 
+    <!-- XP & Streak Profile Section -->
+    <div id="profile-section">
+      <div id="profile">
+        <img src="profile-image.png" alt="User Profile" id="profile-img">
+        <div id="level-progress">
+          <p>XP: <span id="xp">0</span></p>
+          <p>Streak: <span id="streak">0</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Achievement Section -->
+    <div id="add-goal">
+      <h3>Add New Achievement</h3>
+      <form id="goal-form" onsubmit="addAchievement(event)">
+        <input type="text" id="goal-name" placeholder="Achievement Title" required />
+        <input type="text" id="goal-description" placeholder="Description" required />
+        <button type="submit">Add Achievement</button>
+      </form>
+    </div>
+
+    <!-- Achievement List Display -->
+    <div id="goals-section">
+      <h2>Your Achievements</h2>
+      <ul id="achievement-list">
+        <!-- JavaScript will populate this -->
+      </ul>
+    </div>
+
+    <!-- Reminders Section -->
+    <div id="reminder-section">
+      <h2>Reminders</h2>
+      <div class="reminder-item">
+        <p>Reminder: Complete your daily workout!</p>
+        <span class="reminder-status">Pending</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Backend-connected JS -->
+  <script src="achievement_tracker.js"></script>
 </body>
 </html>
+
