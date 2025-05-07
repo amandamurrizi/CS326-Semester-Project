@@ -1,23 +1,30 @@
-//sets up Express app, middleware and routes
 const express = require('express');
 const cors = require('cors');
+const sequelize = require('./db');
+const { User, SleepEntry, MoodLog } = require('./models');
 
 const app = express();
 
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type']
-  }));
-app.options('*', cors()); 
+app.use(cors());
 app.use(express.json());
 
 const sleepRoutes = require('./routes/sleepRoutes');
-const settingsRoutes = require('./routes/settingsRoutes');
-const streakRoutes = require('./routes/streakRoutes');
-
 app.use('/api/sleep', sleepRoutes);
-app.use('/api/settings', settingsRoutes);
-app.use('/api/streak', streakRoutes);
 
-module.exports = app;
+//  Achievement route integration
+const achievementRoutes = require('./routes/achievementRoutes');
+app.use('/api/achievements', achievementRoutes);
+
+sequelize.sync({ alter: true })
+  .then(() => console.log('Database synced'))
+  .catch(err => console.error('Sync failed:', err));
+
+app.get('/', (req, res) => {
+  res.send('Server running!');
+});
+
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
+

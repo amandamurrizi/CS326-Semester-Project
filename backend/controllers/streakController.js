@@ -14,3 +14,4 @@ exports.updateStreak = (req, res) => {
     streakModel.updateStreak(streak);
     res.status(200).json({ message: 'Streak updated successfully' });
 };
+
