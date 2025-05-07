@@ -5,10 +5,25 @@ const todoList = document.getElementById("todo-list");
 const weekRange = document.getElementById("week-range");
 const params = new URLSearchParams(window.location.search);
 const year = parseInt(params.get("year"));
-const selectedMonth = parseInt(params.get("month"));
+//const year = params.get("year");
+//const selectedMonth = parseInt(params.get("month"));
+
+let selectedMonth = localStorage.getItem("selectedMonth");
+let selectedYear = localStorage.getItem('selectedYear');
 
 //set starting week (Sunday)
-let currentWeekStart = new Date(localStorage.getItem("planner-week-start") || getSunday(new Date()));
+let storedWeekStart = localStorage.getItem("planner-week-start");
+
+if (selectedMonth !== null && selectedYear !== null) {
+  // First day of selected month 
+  const firstOfMonth = new Date(parseInt(selectedYear), parseInt(selectedMonth), 1);
+  currentWeekStart = getSunday(firstOfMonth);
+} else if (storedWeekStart) {
+  currentWeekStart = new Date(storedWeekStart);
+} else {
+  currentWeekStart = getSunday(new Date());
+}
+//let currentWeekStart = new Date(localStorage.getItem("planner-week-start") || getSunday(new Date()));
 
 function getSunday(date) {
   const day = date.getDay();
@@ -18,12 +33,21 @@ function getSunday(date) {
   return start_sunday;
 }
 
-if (!isNaN(year) && !isNaN(month)) {
-    const firstOfMonth = new Date(year, month - 1, 1);
-    currentWeekStart = getSunday(firstOfMonth); 
-  } else {
-    currentWeekStart = new Date(localStorage.getItem("planner-week-start") || getSunday(new Date()));
-  }
+  // Default to today's date and use stored date
+if (selectedMonth !== null && selectedYear !== null) {
+
+  startDate = new Date(parseInt(selectedYear), parseInt(selectedMonth), 1);
+} else {
+
+  startDate = new Date();
+}
+
+// if (!isNaN(year) && !isNaN(month)) {
+//     const firstOfMonth = new Date(year, month - 1, 1);
+//     currentWeekStart = getSunday(firstOfMonth); 
+//   } else {
+//     currentWeekStart = new Date(localStorage.getItem("planner-week-start") || getSunday(new Date()));
+//   }
 
 function formatDate(date) {
   return date.toISOString().split("T")[0];
@@ -78,6 +102,7 @@ function renderWeek() {
 //start of furst day
   updateTodoHeader(currentWeekStart);
   fetchTasks(formatDate(currentWeekStart));
+  fetchServerTasks(currentWeekStart);
 }
 
 function updateTodoHeader(dateObj) {
@@ -101,6 +126,7 @@ function fetchTasks(dateStr) {
     }
   };
 }
+
 function loadWeeklyTasks(weekStartDate) {
   fetch(`/tasks?week=${weekStartDate}`)
     .then(response => response.json())
@@ -124,6 +150,27 @@ function renderTasks(tasks) {
   });
 }
 
+//json summery of tasks
+function fetchServerTasks(weekStartDate) {
+  const formattedDate = weekStartDate.toISOString().split("T")[0];
+
+  fetch(`/tasks?week=${formattedDate}`)
+    .then(response => response.json())
+    .then(tasks => {
+      const list = document.getElementById("server-task-list");
+      list.innerHTML = "";
+
+      tasks.forEach(task => {
+        const li = document.createElement("li");
+        li.textContent = `${task.title} (${task.date})`;
+        list.appendChild(li);
+      });
+    })
+    .catch(error => {
+      console.error("Failed to fetch server tasks:", error);
+    });
+}
+
 //buttons
 document.getElementById("prev-week").addEventListener("click", () => {
   currentWeekStart.setDate(currentWeekStart.getDate() - 7);
@@ -134,3 +181,7 @@ document.getElementById("next-week").addEventListener("click", () => {
   currentWeekStart.setDate(currentWeekStart.getDate() + 7);
   renderWeek();
 });
+
+renderWeek(starteDate);
+localStorage.removeItem("selectedMonth");
+localStorage.removeItem("selectedYear");
