@@ -1,6 +1,7 @@
 const User = require('./user');
 const SleepEntry = require('./sleepEntry');
 const MoodLog = require('./moodLog');
+const Achievement = require('./achievement');
 
 User.hasMany(SleepEntry, { foreignKey: 'userId' });
 User.hasMany(MoodLog, { foreignKey: 'userId' });
