@@ -11,6 +11,10 @@ app.use(express.json());
 const sleepRoutes = require('./routes/sleepRoutes');
 app.use('/api/sleep', sleepRoutes);
 
+//  Achievement route integration
+const achievementRoutes = require('./routes/achievementRoutes');
+app.use('/api/achievements', achievementRoutes);
+
 sequelize.sync({ alter: true })
   .then(() => console.log('Database synced'))
   .catch(err => console.error('Sync failed:', err));
