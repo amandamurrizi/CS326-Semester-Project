@@ -114,11 +114,12 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                bedtime: bed,
-                wakeTime: wake,
-                mood: mood,
-                totalSleep: parseFloat(totalSleep)
-            })
+                    userId: 1,
+                    bedtime: bed,
+                    wakeTime: wake,
+                    mood: mood,
+                    totalSleep: parseFloat(totalSleep)
+                })
             })
             .then(response => {
                 if (!response.ok) throw new Error("Failed to log sleep");
@@ -204,6 +205,7 @@
             };
         }
 
+
         function initDB() {
             const request = indexedDB.open('SleepTrackerDB',3);
            
@@ -233,13 +235,13 @@
                     db.createObjectStore('streak', { keyPath: 'key' });
                 }
             };
-        }
+        }   
 
         window.onload = function() {
             applyTheme();
             initDB();
             document.getElementById('log-sleep').addEventListener('click',logSleep);
-            setupGoalControls();
+            setupGoalControls(); 
         };
     </script>
 </head>
