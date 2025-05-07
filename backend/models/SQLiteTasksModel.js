@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './backend/storage/tasks.sqlite',
+  storage: './storage/tasks.sqlite',
 });
 
 const Task = sequelize.define('Task', {
