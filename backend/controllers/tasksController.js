@@ -1,38 +1,35 @@
-exports.getTasks = (req, res) => {
-    const tasks = readTasks();
-    res.json(tasks);
-  };
-  
-  exports.addTask = (req, res) => {
-    const tasks = readTasks();
-    const newTask = {
-      id: Date.now(),
-      text: req.body.text || '',
-      completed: req.body.completed || false
-    };
-    tasks.push(newTask);
-    writeTasks(tasks);
-    res.status(201).json(newTask);
-  };
-  
-  exports.updateTask = (req, res) => {
-    const tasks = readTasks();
-    const id = parseInt(req.params.id);
-    const updatedTask = req.body;
-    const index = tasks.findIndex(t => t.id === id);
-    if (index !== -1) {
-      tasks[index] = { ...tasks[index], ...updatedTask };
-      writeTasks(tasks);
-      res.json(tasks[index]);
-    } else {
-      res.status(404).json({ error: 'Task not found' });
-    }
-  };
-  
-  exports.deleteTask = (req, res) => {
-    let tasks = readTasks();
-    const id = parseInt(req.params.id);
-    const filtered = tasks.filter(t => t.id !== id);
-    writeTasks(filtered);
+const Task = require('../models/SQLiteTasksModel'); // Use the Sequelize model
+
+exports.getTasks = async (req, res) => {
+  const tasks = await Task.findAll();
+  res.json(tasks);
+};
+
+exports.addTask = async (req, res) => {
+  const newTask = await Task.create({
+    text: req.body.text || '',
+    completed: req.body.completed || false,
+  });
+  res.status(201).json(newTask);
+};
+
+exports.updateTask = async (req, res) => {
+  const id = req.params.id;
+  const updatedTask = await Task.update(req.body, { where: { id } });
+  if (updatedTask[0]) {
+    const task = await Task.findByPk(id);
+    res.json(task);
+  } else {
+    res.status(404).json({ error: 'Task not found' });
+  }
+};
+
+exports.deleteTask = async (req, res) => {
+  const id = req.params.id;
+  const deleted = await Task.destroy({ where: { id } });
+  if (deleted) {
     res.status(204).send();
-  };
+  } else {
+    res.status(404).json({ error: 'Task not found' });
+  }
+};
