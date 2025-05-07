@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Workspace & Well-being Planner</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Student Workspace & Well-being Planner</h1>
+        <div class="tabs">
+            <button class="tab" data-target="sleep-tracker.html">Sleep Tracker</button>
+            <button class="tab" data-target="to-do-list.html">To-Do List</button>
+            <button class="tab" data-target="achievements.html">Achievement Tracker</button>
+            <button class="tab" data-target="planner.html">Planner</button>
+        </div>
+
+        <div class="content">
+            <iframe id="content-frame" src="sleep-tracker.html" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const target = this.getAttribute('data-target');
+                document.getElementById('content-frame').src = target;
+            });
+        });
+    </script>
+
+</body>
+</html>
