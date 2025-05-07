@@ -14,18 +14,26 @@
     <button id="next-week">Next Week &gt;</button>
   </div>
 
-  <!-- Weekly View Layout -->
-  <div class="weekly-view">
-    <!-- Weekday Columns(now w js)-->
-    <div class="weekdays" id="weekdays-container">
+  <!-- Weekly View Layout with 7 days of week -->
+  <div class="weekly-wrapper">
+      <div class="weekdays" id="weekdays-container"></div>
+
+      <div class="bottom-panels">
+      <div class="todo-list">
+        <h3 id="todo-title">To Do List</h3>
+        <ul id="todo-list"></ul>
+      </div>
+  
+    <!-- Server Tasks from to do list Panel -->
+    <div class="server-tasks">
+      <h3>Summary of Tasks</h3>
+      <ul id="server-task-list"></ul>
     </div>
   </div>
+</div>
 
-  <!-- To-Do List /amanda's part -->
-  <div class="todo-list">
-    <h3>To Do List</h3>
-  </div>
 
   <script src="planner.js"></script>
 </body>
 </html>
+
