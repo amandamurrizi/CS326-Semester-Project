@@ -8,7 +8,7 @@
 </head>
 <body>
 
-  <div id="tracker-board">
+  <div id="tracker-board" class="tracker-container">
 
     <!-- Header Section -->
     <div id="header">
@@ -27,11 +27,21 @@
       </div>
     </div>
 
+    <!-- XP Goal Section -->
+    <div id="xp-goal-section">
+      <h3>Set Your XP Goal</h3>
+      <form id="xp-goal-form" onsubmit="setXpGoal(event)">
+        <input type="number" id="xp-goal" placeholder="Enter XP Goal" required />
+        <button type="submit">Save XP Goal</button>
+      </form>
+      <p>Current XP Goal: <span id="current-xp-goal">Not Set</span></p>
+    </div>
+
     <!-- Add Achievement Section -->
     <div id="add-goal">
       <h3>Add New Achievement</h3>
       <form id="goal-form" onsubmit="addAchievement(event)">
-        <input type="text" id="goal-name" placeholder="Achievement Title" required />
+        <input type="text" id="goal-title" placeholder="Achievement Title" required />
         <input type="text" id="goal-description" placeholder="Description" required />
         <button type="submit">Add Achievement</button>
       </form>
@@ -43,6 +53,13 @@
       <ul id="achievement-list">
         <!-- JavaScript will populate this -->
       </ul>
+    </div>
+
+    <!-- Streak Tracker Section -->
+    <div id="streak-tracker-section">
+      <h3>Streak Tracker</h3>
+      <p>Current Streak: <span id="current-streak">0</span> days</p>
+      <p>Longest Streak: <span id="longest-streak">0</span> days</p>
     </div>
 
     <!-- Reminders Section -->
@@ -60,4 +77,3 @@
   <script src="achievement_tracker.js"></script>
 </body>
 </html>
-
