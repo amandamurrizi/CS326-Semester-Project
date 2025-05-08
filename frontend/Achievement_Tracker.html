@@ -30,7 +30,7 @@
     <!-- XP Goal Section -->
     <div id="xp-goal-section">
       <h3>Set Your XP Goal</h3>
-      <form id="xp-goal-form" onsubmit="setXpGoal(event)">
+      <form id="xp-goal-form">
         <input type="number" id="xp-goal" placeholder="Enter XP Goal" required />
         <button type="submit">Save XP Goal</button>
       </form>
@@ -40,10 +40,11 @@
     <!-- Add Achievement Section -->
     <div id="add-goal">
       <h3>Add New Achievement</h3>
-      <form id="goal-form" onsubmit="addAchievement(event)">
+      <form id="goal-form">
         <input type="text" id="goal-title" placeholder="Achievement Title" required />
         <input type="text" id="goal-description" placeholder="Description" required />
 
+        <label for="goal-category">Category</label>
         <select id="goal-category" required>
           <option value="">Select Category</option>
           <option value="fitness">Fitness</option>
@@ -52,6 +53,7 @@
           <option value="work">Work</option>
         </select>
 
+        <label for="goal-frequency">Frequency</label>
         <select id="goal-frequency" required>
           <option value="">Select Frequency</option>
           <option value="daily">Daily</option>
