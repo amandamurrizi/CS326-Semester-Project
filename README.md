@@ -4,20 +4,20 @@
 **🎓🧘‍♂️ TaskTrek: A Smart Planner for Student Success & Well-Being**
 
 **Problem**: 
-Students often face issues with sitting down and working on homework, whether it’s due to short attention span, inability to prioritize tasks, or sheer boredom and lack of interest. Additionally, students often forgot to take care of themselves when dealing with busy schedules and stress. This impacts all aspects of physical health (from sleep, eating and exercise habits, etc.). 
+Students often struggle to sit down and complete homework—whether due to short attention spans, difficulty prioritizing tasks, or a lack of motivation and interest. Additionally, when overwhelmed by busy schedules and stress, students tend to neglect self-care. This can negatively impact physical health, including sleep, nutrition, and exercise habits.
 
 **Solution**: 
-Our application seeks to help solve the reluctance that students face when it comes to completing assignments. We aim to create a fun and rewarding experience for completing tasks as well as an interface with tools that can help with focus. On the health side, we want to provide a way for students to maintain healthy habits (especially getting enough sleep) and resources they can consult (finding workouts, healthy meals, etc.)
+Our application aims to addresses the reluctance students face when completing assignments by creating a fun, rewarding, and focused work environment. We aim to support academic productivity with tools that boost focus and engagement, while also encouraging healthy lifestyle habits—especially sleep. The platform will also offer resources for workouts, healthy meals, and overall wellness.
 
 **Key Features**: 
 - Weekly planner interface
-- To-do list with physical representation when you complete something
+- To-do list with visual feedback for task completion
 - Pomodoro timer
-- Achievement completion and reward system
-- Daily tracker for healthy habits
+- Achievement tracking and reward system
+- Daily habit tracker to promote well-being
   
 **Why this Project?**
-As students for several years ourselves, we hope to create a project that we ourselves would use in order to tackle the projects and homework that we have and maintain healthy habits along the way. It can be really difficult to work in a timely manner and be motivated enough to get tasks done as well as keep yourself on a healthy regimen, so students all over should have a platform that helps them overcome these issues to decrease their stress.
+As students ourselves, we wanted to build something we would genuinely use—an app to help us stay on top of coursework while maintaining healthy habits. Balancing motivation, deadlines, and self-care is a challenge for students everywhere. TaskTrek aims to reduce stress and empower users to stay productive and priortize their wellbeing.
 
 **👥 Team Roles & Contributions – TaskTrek**
 
