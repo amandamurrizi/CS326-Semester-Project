@@ -43,6 +43,22 @@
       <form id="goal-form" onsubmit="addAchievement(event)">
         <input type="text" id="goal-title" placeholder="Achievement Title" required />
         <input type="text" id="goal-description" placeholder="Description" required />
+
+        <select id="goal-category" required>
+          <option value="">Select Category</option>
+          <option value="fitness">Fitness</option>
+          <option value="study">Study</option>
+          <option value="habit">Habit</option>
+          <option value="work">Work</option>
+        </select>
+
+        <select id="goal-frequency" required>
+          <option value="">Select Frequency</option>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+
         <button type="submit">Add Achievement</button>
       </form>
     </div>
@@ -65,10 +81,7 @@
     <!-- Reminders Section -->
     <div id="reminder-section">
       <h2>Reminders</h2>
-      <div class="reminder-item">
-        <p>Reminder: Complete your daily workout!</p>
-        <span class="reminder-status">Pending</span>
-      </div>
+      <!-- JavaScript will dynamically populate reminders here -->
     </div>
 
   </div>
