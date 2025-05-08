@@ -1,67 +1,106 @@
-async function fetchAchievements() {
-  const response = await fetch('http://localhost:3002/api/achievements');
-  const achievements = await response.json();
-  displayAchievements(achievements);
-}
+// Initialize variables for XP goal and streak
+let xpGoal = 0;
+let currentStreak = 0;
+let longestStreak = 0;
 
-function displayAchievements(achievements) {
-  const list = document.getElementById('achievement-list');
-  list.innerHTML = '';
+// Fetch and display achievements
+async function fetchAchievements() {
+  const response = await fetch('http://localhost:3000/api/achievements');
+  const achievements = await response.json();
+  const achievementList = document.getElementById('achievement-list');
+  achievementList.innerHTML = '';
 
   achievements.forEach(achievement => {
     const listItem = document.createElement('li');
-    listItem.innerHTML = `
-      <strong>${achievement.name}</strong> - ${achievement.description}<br>
-      XP: ${achievement.xp} | Streak: ${achievement.streak} | Completed: ${achievement.completed ? '✅' : '❌'}
-      <button onclick="markCompleted('${achievement.id}')">Mark Completed</button>
-      <button onclick="deleteAchievement('${achievement.id}')">Delete</button>
-    `;
-    list.appendChild(listItem);
+    listItem.textContent = `${achievement.title} - ${achievement.description} (${achievement.date})`;
+    achievementList.appendChild(listItem);
   });
 }
 
+// Add a new achievement
 async function addAchievement(event) {
   event.preventDefault();
 
-  const name = document.getElementById('goal-name').value;
+  const title = document.getElementById('goal-title').value;
   const description = document.getElementById('goal-description').value;
 
   const newAchievement = {
-    id: Date.now().toString(), //  match Sequelize STRING type
-    name,
+    title,
     description,
-    xp: 0,
-    streak: 0,
-    completed: false
+    date: new Date().toISOString().split('T')[0]
   };
 
-  await fetch('http://localhost:3002/api/achievements', {
+  const response = await fetch('http://localhost:3000/api/achievements', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(newAchievement)
   });
 
-  document.getElementById('goal-form').reset();
-  fetchAchievements();
+  if (response.ok) {
+    updateStreak();
+    document.getElementById('goal-form').reset();
+    fetchAchievements();
+  } else {
+    console.error('Failed to add achievement');
+  }
 }
 
-async function markCompleted(id) {
-  await fetch(`http://localhost:3002/api/achievements/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ completed: true })
-  });
+// Set XP goal
+function setXpGoal(event) {
+  event.preventDefault();
 
-  fetchAchievements();
+  const xpGoalInput = document.getElementById('xp-goal').value;
+  xpGoal = parseInt(xpGoalInput, 10);
+
+  if (!isNaN(xpGoal) && xpGoal > 0) {
+    document.getElementById('current-xp-goal').textContent = `${xpGoal} XP`;
+    alert(`XP Goal set to ${xpGoal} XP!`);
+  } else {
+    alert('Please enter a valid XP goal.');
+  }
+
+  document.getElementById('xp-goal-form').reset();
 }
 
-async function deleteAchievement(id) {
-  await fetch(`http://localhost:3002/api/achievements/${id}`, {
-    method: 'DELETE'
-  });
+// Update streak
+function updateStreak() {
+  currentStreak += 1;
+  if (currentStreak > longestStreak) {
+    longestStreak = currentStreak;
+  }
 
-  fetchAchievements();
+  document.getElementById('current-streak').textContent = currentStreak;
+  document.getElementById('longest-streak').textContent = longestStreak;
 }
 
-window.onload = fetchAchievements;
+// Initialize the page
+document.addEventListener('DOMContentLoaded', () => {
+  fetchAchievements();
 
+  // Load streak and XP goal from local storage
+  const savedXpGoal = localStorage.getItem('xpGoal');
+  const savedCurrentStreak = localStorage.getItem('currentStreak');
+  const savedLongestStreak = localStorage.getItem('longestStreak');
+
+  if (savedXpGoal) {
+    xpGoal = parseInt(savedXpGoal, 10);
+    document.getElementById('current-xp-goal').textContent = `${xpGoal} XP`;
+  }
+
+  if (savedCurrentStreak) {
+    currentStreak = parseInt(savedCurrentStreak, 10);
+    document.getElementById('current-streak').textContent = currentStreak;
+  }
+
+  if (savedLongestStreak) {
+    longestStreak = parseInt(savedLongestStreak, 10);
+    document.getElementById('longest-streak').textContent = longestStreak;
+  }
+});
+
+// Save streak and XP goal to local storage before the page unloads
+window.addEventListener('beforeunload', () => {
+  localStorage.setItem('xpGoal', xpGoal);
+  localStorage.setItem('currentStreak', currentStreak);
+  localStorage.setItem('longestStreak', longestStreak);
+});
