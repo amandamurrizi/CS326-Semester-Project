@@ -35,32 +35,91 @@ h2 {
     color: #666;
 }
 
-/* Goal Item */
-.goal-item {
-    background-color: #f1f1f1;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
+/* XP & Streak Profile Section */
+#profile-section {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+#profile {
+    text-align: center;
+}
+
+#profile-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+#level-progress p {
+    font-size: 1.2em;
+    margin: 5px 0;
+}
+
+/* XP Goal Section */
+#xp-goal-section {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-left: 5px solid #4CAF50;
+    border-radius: 10px;
+}
+
+#xp-goal-section h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+#xp-goal-section form {
+    display: flex;
+    flex-direction: column;
     align-items: center;
 }
 
-.goal-item.completed {
-    background-color: #d4edda;
+#xp-goal-section input,
+#xp-goal-section button {
+    padding: 10px;
+    margin: 5px 0;
+    width: 80%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
 }
 
-.goal-title {
-    font-weight: bold;
+#xp-goal-section button {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
 }
 
-.goal-status {
-    color: green;
+#xp-goal-section button:hover {
+    background-color: #45a049;
+}
+
+/* Streak Tracker Section */
+#streak-tracker-section {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-left: 5px solid #2196F3;
+    border-radius: 10px;
+}
+
+#streak-tracker-section h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+#streak-tracker-section p {
+    font-size: 1.2em;
+    margin: 5px 0;
 }
 
 /* Add Goal Form */
 #add-goal input,
-#add-goal select,
 #add-goal button {
     padding: 10px;
     margin: 5px;
@@ -80,27 +139,39 @@ button:hover {
     background-color: #45a049;
 }
 
-/* Level Bar */
-.level-bar {
-    width: 100%;
-    background-color: #f3f3f3;
-    border-radius: 10px;
-    margin-top: 20px;
+/* Achievement List */
+#achievement-list {
+    list-style-type: none;
+    padding: 0;
 }
 
-.level-progress {
-    background-color: #4CAF50;
-    height: 20px;
-    border-radius: 10px;
+#achievement-list li {
+    background-color: #f1f1f1;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.level-label {
-    font-size: 1.2em;
-    text-align: center;
-    margin-top: 10px;
+#achievement-list li.completed {
+    background-color: #d4edda;
+}
+
+.goal-title {
+    font-weight: bold;
+}
+
+.goal-status {
+    color: green;
 }
 
 /* Reminder Section */
+#reminder-section {
+    margin: 20px 0;
+}
+
 .reminder-item {
     background-color: #ffeb3b;
     padding: 10px;
@@ -113,4 +184,5 @@ button:hover {
 
 .reminder-status {
     font-weight: bold;
+    color: #d32f2f;
 }
