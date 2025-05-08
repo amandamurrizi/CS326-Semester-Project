@@ -3,7 +3,7 @@ const cors = require('cors');
 const achievementRoutes = require('./routes/achievementRoutes');
 
 const app = express();
-const PORT = 3002;
+const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
