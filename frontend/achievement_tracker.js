@@ -1,56 +1,30 @@
-// Initialize variables for XP goal and streak
 let xpGoal = 0;
 let currentStreak = 0;
 let longestStreak = 0;
 
-// Fetch and display achievements
 async function fetchAchievements() {
-  try {
-    const response = await fetch('http://localhost:3000/api/achievements');
-    const achievements = await response.json();
-    const achievementList = document.getElementById('achievement-list');
-    achievementList.innerHTML = '';
+  const response = await fetch('http://localhost:3000/api/achievements');
+  const achievements = await response.json();
+  const achievementList = document.getElementById('achievement-list');
+  achievementList.innerHTML = '';
 
-    let totalXP = 0;
+  achievements.forEach(achievement => {
+    const listItem = document.createElement('li');
+    listItem.textContent = `${achievement.title} - ${achievement.description} (${achievement.date})`;
+    achievementList.appendChild(listItem);
+  });
 
-    achievements.forEach(({ title, description, category, frequency, xp, date }) => {
-      totalXP += xp || 0;
-
-      const listItem = document.createElement('li');
-      listItem.innerHTML = `
-        <div>
-          <span class="goal-title">${title}</span> - ${description} (${date})<br>
-          <small>Category: ${category}, Frequency: ${frequency}</small>
-        </div>
-        <div>
-          <span class="goal-status">+${xp} XP</span>
-        </div>
-      `;
-      achievementList.appendChild(listItem);
-    });
-
-    document.getElementById('xp').textContent = totalXP;
-    document.getElementById('streak').textContent = currentStreak;
-
-    generateReminders(achievements);
-  } catch (err) {
-    console.error('Error fetching achievements:', err);
-  }
+  updateReminders(achievements);
 }
 
-// Add a new achievement
 async function addAchievement(event) {
   event.preventDefault();
+  console.log("✅ Add Achievement triggered");
 
   const title = document.getElementById('goal-title').value;
   const description = document.getElementById('goal-description').value;
   const category = document.getElementById('goal-category').value;
   const frequency = document.getElementById('goal-frequency').value;
-
-  if (!title || !description || !category || !frequency) {
-    alert("Please fill in all fields.");
-    return;
-  }
 
   const newAchievement = {
     title,
@@ -60,30 +34,23 @@ async function addAchievement(event) {
     date: new Date().toISOString().split('T')[0]
   };
 
-  try {
-    const response = await fetch('http://localhost:3000/api/achievements', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newAchievement)
-    });
+  const response = await fetch('http://localhost:3000/api/achievements', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(newAchievement)
+  });
 
-    if (response.ok) {
-      updateStreak();
-      document.getElementById('goal-form').reset();
-      fetchAchievements();
-    } else {
-      console.error('Failed to add achievement');
-      alert('Error adding achievement. Please try again.');
-    }
-  } catch (err) {
-    console.error('Network error:', err);
+  if (response.ok) {
+    updateStreak();
+    document.getElementById('goal-form').reset();
+    fetchAchievements();
+  } else {
+    console.error('Failed to add achievement');
   }
 }
 
-// Set XP goal
 function setXpGoal(event) {
   event.preventDefault();
-
   const xpGoalInput = document.getElementById('xp-goal').value;
   xpGoal = parseInt(xpGoalInput, 10);
 
@@ -97,7 +64,6 @@ function setXpGoal(event) {
   document.getElementById('xp-goal-form').reset();
 }
 
-// Update streak
 function updateStreak() {
   currentStreak += 1;
   if (currentStreak > longestStreak) {
@@ -108,52 +74,24 @@ function updateStreak() {
   document.getElementById('longest-streak').textContent = longestStreak;
 }
 
-// Generate reminders based on achievements
-function generateReminders(achievements) {
-  const reminderContainer = document.getElementById('reminder-section');
-  reminderContainer.innerHTML = '<h2>Reminders</h2>'; // reset header
+function updateReminders(achievements) {
+  const reminderSection = document.getElementById('reminder-section');
+  reminderSection.innerHTML = '<h2>Reminders</h2>';
 
-  const categories = achievements.map(a => a.category);
-  const uniqueCategories = [...new Set(categories)];
+  const categories = new Set();
+  achievements.forEach(a => categories.add(a.category.toLowerCase()));
 
-  if (uniqueCategories.includes('fitness')) {
-    reminderContainer.innerHTML += `
-      <div class="reminder-item">
-        <p>Reminder: Stay consistent with your fitness goals today!</p>
-        <span class="reminder-status">Pending</span>
-      </div>
+  categories.forEach(category => {
+    const reminder = document.createElement('div');
+    reminder.classList.add('reminder-item');
+    reminder.innerHTML = `
+      <p>Reminder: Don't forget your ${category} goal today!</p>
+      <span class="reminder-status">Pending</span>
     `;
-  }
-
-  if (!uniqueCategories.includes('study')) {
-    reminderContainer.innerHTML += `
-      <div class="reminder-item">
-        <p>Reminder: You haven't set any study goals yet. Consider adding one!</p>
-        <span class="reminder-status">Suggested</span>
-      </div>
-    `;
-  }
-
-  if (uniqueCategories.includes('habit')) {
-    reminderContainer.innerHTML += `
-      <div class="reminder-item">
-        <p>Keep up with your habit-building streak!</p>
-        <span class="reminder-status">In Progress</span>
-      </div>
-    `;
-  }
-
-  if (achievements.length === 0) {
-    reminderContainer.innerHTML += `
-      <div class="reminder-item">
-        <p>Start by adding your first achievement!</p>
-        <span class="reminder-status">Getting Started</span>
-      </div>
-    `;
-  }
+    reminderSection.appendChild(reminder);
+  });
 }
 
-// Initialize the page
 document.addEventListener('DOMContentLoaded', () => {
   fetchAchievements();
 
@@ -175,9 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
     longestStreak = parseInt(savedLongestStreak, 10);
     document.getElementById('longest-streak').textContent = longestStreak;
   }
+
+  document.getElementById('goal-form').addEventListener('submit', addAchievement);
+  document.getElementById('xp-goal-form').addEventListener('submit', setXpGoal);
 });
 
-// Save streak and XP goal to local storage before the page unloads
 window.addEventListener('beforeunload', () => {
   localStorage.setItem('xpGoal', xpGoal);
   localStorage.setItem('currentStreak', currentStreak);
